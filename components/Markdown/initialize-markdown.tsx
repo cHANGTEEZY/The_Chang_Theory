@@ -26,7 +26,18 @@ import {
   InsertCodeBlock,
 } from "@mdxeditor/editor";
 
-// Only import this to the next file
+/**
+ * Initialize and render an MDXEditor preconfigured with common editing plugins and toolbar controls.
+ *
+ * The editor instance includes heading, lists, quote, thematic break, and markdown shortcut plugins;
+ * link and link-dialog handling; image support with empty autocomplete suggestions; table support;
+ * code block support (default language "js") with CodeMirror language mappings; and a toolbar containing
+ * undo/redo, text-format toggles, block type selection, link creation, image insertion, table insertion,
+ * and code block insertion controls.
+ *
+ * @param editorRef - Forwarded ref that receives the underlying MDXEditor methods
+ * @returns A JSX element of MDXEditor configured with the predefined plugins and toolbar
+ */
 export default function InitializedMDXEditor({
   editorRef,
   ...props
