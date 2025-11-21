@@ -12,11 +12,17 @@ const SignUpPage = () => {
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
-    const response = await SingUpAction(formData);
-    if (response.success) {
-      return console.log("Success", response);
+
+    try {
+      const response = await SingUpAction(formData);
+      if (response.success) {
+        return console.log("Success", response);
+
+        console.log("error", response);
+      }
+    } catch (error) {
+      return console.log("error", error);
     }
-    console.log("error", response);
   };
 
   return (
