@@ -149,7 +149,7 @@ const Header = () => {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Link href="/create" className="flex gap-2 items-center">
+                  <Link href="/blog" className="flex gap-2 items-center">
                     <Plus size={16} /> Create Post
                   </Link>
                 </DropdownMenuItem>
