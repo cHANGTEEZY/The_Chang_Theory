@@ -38,7 +38,7 @@ const Header = () => {
     if (!userSessionData && !isLoading) {
       fetchUserSession();
     }
-  }, [userSessionData, isLoading, fetchUserSession]);
+  }, []);
 
   const handleLogout = async () => {
     await authClient.signOut();
