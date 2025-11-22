@@ -25,43 +25,30 @@ import {
 } from "./ui/dropdown-menu";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-
-type UserData = {
-  id: string;
-  name: string;
-  email: string;
-  image?: string | null;
-};
+import { useEffect } from "react";
+import { useUserStore } from "@/store";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
-  const [userData, setUserData] = useState<UserData | null>(null);
+  const router = useRouter();
+  const { userSessionData, fetchUserSession, clearUserSession, isLoading } =
+    useUserStore();
 
   useEffect(() => {
-    const checkSession = async () => {
-      try {
-        const session = await authClient.getSession();
-        if (session?.data?.user) {
-          setUserData(session.data.user as UserData);
-        } else {
-          setUserData(null);
-        }
-      } catch (error) {
-        console.error("Error fetching session:", error);
-        setUserData(null);
-      }
-    };
-
-    checkSession();
-  }, []);
+    if (!userSessionData && !isLoading) {
+      fetchUserSession();
+    }
+  }, [userSessionData, isLoading, fetchUserSession]);
 
   const handleLogout = async () => {
     await authClient.signOut();
-    setUserData(null);
+    clearUserSession();
+    router.push("/signin");
+    router.refresh();
   };
 
-  const isLoggedIn = !!userData;
+  const isLoggedIn = !!userSessionData?.user;
+  const userData = userSessionData?.user;
 
   return (
     <header className="py-4 mb-10 sticky top-0 z-50 backdrop-blur-lg  bg-slate-500 dark:bg-gray-900/60 shadow-sm">
@@ -149,7 +136,7 @@ const Header = () => {
                 </DropdownMenuItem>
 
                 <DropdownMenuItem asChild>
-                  <Link href="/create" className="flex gap-2 items-center">
+                  <Link href="/blog" className="flex gap-2 items-center">
                     <Plus size={16} /> Create Post
                   </Link>
                 </DropdownMenuItem>

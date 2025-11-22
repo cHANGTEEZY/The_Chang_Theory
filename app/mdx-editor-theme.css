@@ -1,0 +1,128 @@
+/* MDX Editor Dark Theme Overrides */
+.dark .mdxeditor {
+  --accentBase: #3b82f6;
+  --baseBackground: rgb(17 24 39);
+  --admonitionTipBackground: rgba(59, 130, 246, 0.1);
+}
+
+.dark .mdxeditor-toolbar {
+  background-color: #000000 !important;
+  border-bottom-color: rgb(55 65 81) !important;
+}
+
+.dark .mdxeditor-root-contenteditable {
+  background-color: rgb(17 24 39) !important;
+  color: rgb(243 244 246) !important;
+}
+
+.dark .mdxeditor button {
+  color: #ffffff !important;
+}
+
+.dark .mdxeditor button:hover {
+  background-color: rgb(55 65 81);
+  color: #ffffff !important;
+}
+
+.dark .mdxeditor select {
+  background-color: #000000;
+  color: #ffffff !important;
+  border-color: rgb(55 65 81);
+}
+
+.dark .mdxeditor [role="textbox"] {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .mdxeditor .cm-editor {
+  background-color: rgb(31 41 55) !important;
+}
+
+.dark .mdxeditor .cm-content {
+  color: rgb(243 244 246) !important;
+}
+
+.dark .mdxeditor svg {
+  color: #ffffff !important;
+  fill: currentColor;
+}
+
+/* MDX Editor Light Theme */
+.mdxeditor {
+  --accentBase: #3b82f6;
+  --baseBackground: #ffffff;
+}
+
+.mdxeditor-toolbar {
+  background-color: #000000 !important;
+  border-bottom-color: #1f1f1f !important;
+}
+
+.mdxeditor button {
+  color: #ffffff !important;
+}
+
+.mdxeditor button:hover {
+  background-color: rgb(55 65 81);
+  color: #ffffff !important;
+}
+
+.mdxeditor select {
+  background-color: #000000;
+  color: #ffffff !important;
+  border-color: rgb(55 65 81);
+}
+
+.mdxeditor svg {
+  color: #ffffff !important;
+  fill: currentColor;
+}
+
+.mdxeditor-root-contenteditable {
+  background-color: #ffffff !important;
+  color: rgb(17 24 39) !important;
+}
+
+/* Common styles */
+.mdxeditor {
+  font-family: inherit;
+}
+
+.mdxeditor-toolbar {
+  padding: 8px;
+  gap: 4px;
+}
+
+.mdxeditor-root-contenteditable {
+  min-height: 500px;
+  padding: 1rem;
+}
+
+/* Make sure all toolbar items have white text/icons */
+.mdxeditor-toolbar button,
+.mdxeditor-toolbar select,
+.mdxeditor-toolbar [role="separator"] {
+  color: #ffffff !important;
+}
+
+.mdxeditor-toolbar button svg,
+.mdxeditor-toolbar select svg {
+  color: #ffffff !important;
+}
+
+/* Dropdown menus */
+.mdxeditor [role="menu"],
+.mdxeditor [role="listbox"] {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.mdxeditor [role="menuitem"],
+.mdxeditor [role="option"] {
+  color: #ffffff !important;
+}
+
+.mdxeditor [role="menuitem"]:hover,
+.mdxeditor [role="option"]:hover {
+  background-color: rgb(55 65 81) !important;
+}
