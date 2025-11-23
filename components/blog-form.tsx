@@ -46,6 +46,7 @@ const BlogForm = ({ initialData, onSuccess }: BlogFormComponentProps) => {
     control,
     handleSubmit,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<BlogFormProps>({
     resolver: zodResolver(formSchema) as any,
@@ -83,6 +84,8 @@ const BlogForm = ({ initialData, onSuccess }: BlogFormComponentProps) => {
         response.error || "Failed processing blog post. Please try again later"
       );
     }
+
+    reset();
 
     toast.success(
       `Blog post ${initialData ? "updated" : "created"} successfully`
