@@ -86,6 +86,7 @@ const BlogForm = ({ initialData, onSuccess }: BlogFormComponentProps) => {
     }
 
     reset();
+    editorRef.current?.setMarkdown("");
 
     toast.success(
       `Blog post ${initialData ? "updated" : "created"} successfully`
