@@ -6,6 +6,9 @@ import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const AccountUpdateSchema = z
   .object({
@@ -17,36 +20,23 @@ const AccountUpdateSchema = z
       .refine(
         (files) => {
           if (!files || files.length === 0) return true;
-          const file = files[0];
-          return file && file.type.startsWith("image/");
+          if (files instanceof FileList) {
+            const file = files[0];
+            return file && file.type.startsWith("image/");
+          }
+          return true;
         },
         {
           message: "Only image files are allowed",
         }
       ),
-    password: z.string().optional().or(z.literal("")),
-    confirmPassword: z.string().optional().or(z.literal("")),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Confirm Password is required"),
   })
   .refine(
     (data) => {
-      if (
-        data.password &&
-        data.password.length > 0 &&
-        data.password.length < 6
-      ) {
+      if (data.password !== data.confirmPassword) {
         return false;
-      }
-      return true;
-    },
-    {
-      message: "Password must be at least 6 characters",
-      path: ["password"],
-    }
-  )
-  .refine(
-    (data) => {
-      if (data.password && data.password.length > 0) {
-        return data.password === data.confirmPassword;
       }
       return true;
     },
@@ -62,6 +52,8 @@ type UserSessionData = {
   name: string;
   email: string;
   image?: string | null;
+  createdAt: string;
+  emailVerified: boolean;
 };
 
 const ProfileForm = ({
@@ -69,12 +61,14 @@ const ProfileForm = ({
 }: {
   userSessionData: UserSessionData | null;
 }) => {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AccountUpdateFormData>({
     resolver: zodResolver(AccountUpdateSchema),
+    mode: "onChange",
     defaultValues: {
       username: userSessionData?.name || "",
       email: userSessionData?.email || "",
@@ -83,104 +77,121 @@ const ProfileForm = ({
     },
   });
 
-  const handleAccountUpdate = (data: AccountUpdateFormData) => {
-    const imageFile = data.image && data.image[0] ? data.image[0] : undefined;
+  const handleAccountUpdate = async (data: AccountUpdateFormData) => {
+    try {
+      const imageFile = data.image && data.image[0] ? data.image[0] : undefined;
 
-    const formData = {
-      username: data.username,
-      email: data.email,
-      image: imageFile,
-      password: data.password || undefined,
-      confirmPassword: data.confirmPassword || undefined,
-    };
+      const formData = {
+        username: data.username,
+        email: data.email,
+        image: imageFile,
+        password: data.password,
+        confirmPassword: data.confirmPassword,
+      };
 
-    console.log("Account Update Data:", formData);
-    console.log("Image File:", imageFile);
+      console.log("Account Update Data:", formData);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      toast.success("Profile updated successfully!");
+      router.refresh();
+
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      toast.error("Failed to update profile. Please try again.");
+    }
   };
 
   return (
-    <section>
-      <form onSubmit={handleSubmit(handleAccountUpdate)} className="space-y-4 ">
-        <div className="space-y-2">
+    <form onSubmit={handleSubmit(handleAccountUpdate)} className="space-y-4 py-4">
+      <div className="grid gap-4">
+        <div className="grid gap-2">
           <Label htmlFor="username">Username</Label>
           <Input
             id="username"
             type="text"
             placeholder="Enter your username"
             {...register("username")}
+            className={errors.username ? "border-red-500" : ""}
           />
           {errors.username && (
-            <span className="text-red-500 text-sm">
+            <p className="text-red-500 text-sm font-medium">
               {errors.username.message}
-            </span>
+            </p>
           )}
         </div>
-        <div className="space-y-2">
+
+        <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
             placeholder="Enter your email"
             {...register("email")}
+            className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email.message}</span>
+            <p className="text-red-500 text-sm font-medium">{errors.email.message}</p>
           )}
         </div>
-        <div className="space-y-2">
+
+        <div className="grid gap-2">
           <Label htmlFor="image">Profile Image</Label>
           <Input
             id="image"
             type="file"
             accept="image/*"
             {...register("image")}
+            className={errors.image ? "border-red-500" : ""}
           />
           {errors.image && typeof errors.image.message === "string" && (
-            <span className="text-red-500 text-sm">{errors.image.message}</span>
+            <p className="text-red-500 text-sm font-medium">{errors.image.message}</p>
           )}
           <p className="text-xs text-muted-foreground">
             Upload a new profile image (optional)
           </p>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="password">New Password (Optional)</Label>
+        <div className="grid gap-2">
+          <Label htmlFor="password">New Password</Label>
           <Input
             id="password"
             type="password"
             placeholder="Enter your new password"
             {...register("password")}
+            className={errors.password ? "border-red-500" : ""}
           />
           {errors.password && (
-            <span className="text-red-500 text-sm">
+            <p className="text-red-500 text-sm font-medium">
               {errors.password.message}
-            </span>
+            </p>
           )}
-          <p className="text-xs text-muted-foreground">
-            Leave blank to keep current password
-          </p>
         </div>
 
-        <div className="space-y-2">
+        <div className="grid gap-2">
           <Label htmlFor="confirmPassword">Confirm New Password</Label>
           <Input
             id="confirmPassword"
             type="password"
             placeholder="Confirm your new password"
             {...register("confirmPassword")}
+            className={errors.confirmPassword ? "border-red-500" : ""}
           />
           {errors.confirmPassword && (
-            <span className="text-red-500 text-sm">
+            <p className="text-red-500 text-sm font-medium">
               {errors.confirmPassword.message}
-            </span>
+            </p>
           )}
         </div>
+      </div>
 
-        <Button type="submit" disabled={isSubmitting} className="mt-4">
-          {isSubmitting ? "Updating..." : "Update Profile"}
+      <div className="flex justify-end pt-4">
+        <Button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Updating..." : "Save Changes"}
         </Button>
-      </form>
-    </section>
+      </div>
+    </form>
   );
 };
 
