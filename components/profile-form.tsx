@@ -11,21 +11,40 @@ const AccountUpdateSchema = z
   .object({
     username: z.string().min(1, "Username is required"),
     email: z.string().email("Invalid email address"),
-    image: z.string().url("Invalid URL").optional().or(z.literal("")),
-    password: z
-      .string()
-      .min(6, "Password must be at least 6 characters")
+    image: z
+      .any()
       .optional()
-      .or(z.literal("")),
-    confirmPassword: z
-      .string()
-      .min(6, "Confirm Password must be at least 6 characters")
-      .optional()
-      .or(z.literal("")),
+      .refine(
+        (files) => {
+          if (!files || files.length === 0) return true;
+          const file = files[0];
+          return file && file.type.startsWith("image/");
+        },
+        {
+          message: "Only image files are allowed",
+        }
+      ),
+    password: z.string().optional().or(z.literal("")),
+    confirmPassword: z.string().optional().or(z.literal("")),
   })
   .refine(
     (data) => {
-      // Only check password match if password is provided
+      if (
+        data.password &&
+        data.password.length > 0 &&
+        data.password.length < 6
+      ) {
+        return false;
+      }
+      return true;
+    },
+    {
+      message: "Password must be at least 6 characters",
+      path: ["password"],
+    }
+  )
+  .refine(
+    (data) => {
       if (data.password && data.password.length > 0) {
         return data.password === data.confirmPassword;
       }
@@ -39,91 +58,126 @@ const AccountUpdateSchema = z
 
 type AccountUpdateFormData = z.infer<typeof AccountUpdateSchema>;
 
-const ProfileForm = ({ userSessionData }: { userSessionData: any }) => {
+type UserSessionData = {
+  name: string;
+  email: string;
+  image?: string | null;
+};
+
+const ProfileForm = ({
+  userSessionData,
+}: {
+  userSessionData: UserSessionData | null;
+}) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<AccountUpdateFormData>({
     resolver: zodResolver(AccountUpdateSchema),
     defaultValues: {
       username: userSessionData?.name || "",
       email: userSessionData?.email || "",
-      image: "",
       password: "",
       confirmPassword: "",
     },
   });
 
   const handleAccountUpdate = (data: AccountUpdateFormData) => {
-    console.log("Account Update Data:", JSON.stringify(data, null, 2));
+    const imageFile = data.image && data.image[0] ? data.image[0] : undefined;
+
+    const formData = {
+      username: data.username,
+      email: data.email,
+      image: imageFile,
+      password: data.password || undefined,
+      confirmPassword: data.confirmPassword || undefined,
+    };
+
+    console.log("Account Update Data:", formData);
+    console.log("Image File:", imageFile);
   };
 
   return (
     <section>
       <form onSubmit={handleSubmit(handleAccountUpdate)} className="space-y-4 ">
-        <div className="space-y-2 mt-7">
-          <Label>Username</Label>
+        <div className="space-y-2">
+          <Label htmlFor="username">Username</Label>
           <Input
+            id="username"
             type="text"
             placeholder="Enter your username"
             {...register("username")}
           />
           {errors.username && (
-            <span className="text-red-500">{errors.username.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.username.message}
+            </span>
           )}
         </div>
         <div className="space-y-2">
-          <Label>Email</Label>
+          <Label htmlFor="email">Email</Label>
           <Input
+            id="email"
             type="email"
             placeholder="Enter your email"
             {...register("email")}
           />
           {errors.email && (
-            <span className="text-red-500">{errors.email.message}</span>
+            <span className="text-red-500 text-sm">{errors.email.message}</span>
           )}
         </div>
         <div className="space-y-2">
-          <Label>Image</Label>
+          <Label htmlFor="image">Profile Image</Label>
           <Input
-            type="text"
-            placeholder="Enter your image URL"
+            id="image"
+            type="file"
+            accept="image/*"
             {...register("image")}
           />
-          {errors.image && (
-            <span className="text-red-500">{errors.image.message}</span>
+          {errors.image && typeof errors.image.message === "string" && (
+            <span className="text-red-500 text-sm">{errors.image.message}</span>
           )}
+          <p className="text-xs text-muted-foreground">
+            Upload a new profile image (optional)
+          </p>
         </div>
 
         <div className="space-y-2">
-          <Label>Password</Label>
+          <Label htmlFor="password">New Password (Optional)</Label>
           <Input
+            id="password"
             type="password"
-            placeholder="Enter your new Password"
+            placeholder="Enter your new password"
             {...register("password")}
           />
           {errors.password && (
-            <span className="text-red-500">{errors.password.message}</span>
+            <span className="text-red-500 text-sm">
+              {errors.password.message}
+            </span>
           )}
+          <p className="text-xs text-muted-foreground">
+            Leave blank to keep current password
+          </p>
         </div>
 
         <div className="space-y-2">
-          <Label>Confirm New Password</Label>
+          <Label htmlFor="confirmPassword">Confirm New Password</Label>
           <Input
+            id="confirmPassword"
             type="password"
-            placeholder="Enter your new Password again"
+            placeholder="Confirm your new password"
             {...register("confirmPassword")}
           />
           {errors.confirmPassword && (
-            <span className="text-red-500">
+            <span className="text-red-500 text-sm">
               {errors.confirmPassword.message}
             </span>
           )}
         </div>
 
-        <Button type="submit" className="mt-4">
-          Update Profile
+        <Button type="submit" disabled={isSubmitting} className="mt-4">
+          {isSubmitting ? "Updating..." : "Update Profile"}
         </Button>
       </form>
     </section>
