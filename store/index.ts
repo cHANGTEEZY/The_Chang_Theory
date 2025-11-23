@@ -40,7 +40,6 @@ export const useUserStore = create<UserStore>((set) => ({
         set({ userSessionData: null, isLoading: false });
       }
     } catch (error) {
-      console.error("Error fetching user session:", error);
       set({ userSessionData: null, isLoading: false });
     }
   },

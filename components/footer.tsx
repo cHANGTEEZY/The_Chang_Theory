@@ -9,7 +9,7 @@ const Footer = () => {
                     <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
                         Built by{" "}
                         <a
-                            href="#"
+                            href="https://www.sushankgurung.com"
                             target="_blank"
                             rel="noreferrer"
                             className="font-medium underline underline-offset-4"
@@ -18,7 +18,7 @@ const Footer = () => {
                         </a>
                         . The source code is available on{" "}
                         <a
-                            href="#"
+                            href="https://github.com/cHANGTEEZY/The_Chang_Theory"
                             target="_blank"
                             rel="noreferrer"
                             className="font-medium underline underline-offset-4"
@@ -30,7 +30,7 @@ const Footer = () => {
                 </div>
                 <div className="flex items-center gap-4">
                     <Link
-                        href="#"
+                        href="https://github.com/cHANGTEEZY"
                         target="_blank"
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-foreground transition-colors"
@@ -38,17 +38,9 @@ const Footer = () => {
                         <Github className="h-5 w-5" />
                         <span className="sr-only">GitHub</span>
                     </Link>
+
                     <Link
-                        href="#"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                        <Twitter className="h-5 w-5" />
-                        <span className="sr-only">Twitter</span>
-                    </Link>
-                    <Link
-                        href="#"
+                        href="https://www.linkedin.com/in/sushank-gurung/"
                         target="_blank"
                         rel="noreferrer"
                         className="text-muted-foreground hover:text-foreground transition-colors"

@@ -51,7 +51,6 @@ const SignInPage = () => {
       }
     } catch (error) {
       toast.error("An error occurred");
-      console.log("error", error);
     } finally {
       setIsLoading(false);
     }

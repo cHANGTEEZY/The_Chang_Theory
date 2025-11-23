@@ -89,22 +89,21 @@ const ProfileForm = ({
         confirmPassword: data.confirmPassword,
       };
 
-      console.log("Account Update Data:", formData);
-
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       toast.success("Profile updated successfully!");
       router.refresh();
-
     } catch (error) {
-      console.error("Error updating profile:", error);
       toast.error("Failed to update profile. Please try again.");
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(handleAccountUpdate)} className="space-y-4 py-4">
+    <form
+      onSubmit={handleSubmit(handleAccountUpdate)}
+      className="space-y-4 py-4"
+    >
       <div className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="username">Username</Label>
@@ -132,7 +131,9 @@ const ProfileForm = ({
             className={errors.email ? "border-red-500" : ""}
           />
           {errors.email && (
-            <p className="text-red-500 text-sm font-medium">{errors.email.message}</p>
+            <p className="text-red-500 text-sm font-medium">
+              {errors.email.message}
+            </p>
           )}
         </div>
 
@@ -146,7 +147,9 @@ const ProfileForm = ({
             className={errors.image ? "border-red-500" : ""}
           />
           {errors.image && typeof errors.image.message === "string" && (
-            <p className="text-red-500 text-sm font-medium">{errors.image.message}</p>
+            <p className="text-red-500 text-sm font-medium">
+              {errors.image.message}
+            </p>
           )}
           <p className="text-xs text-muted-foreground">
             Upload a new profile image (optional)

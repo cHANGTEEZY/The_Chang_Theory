@@ -13,14 +13,10 @@ import {
   toolbarPlugin,
   UndoRedo,
   BoldItalicUnderlineToggles,
-  BlockTypeSelect,
-  CreateLink,
   linkPlugin,
   linkDialogPlugin,
   imagePlugin,
-  InsertImage,
   tablePlugin,
-  InsertTable,
   codeBlockPlugin,
   codeMirrorPlugin,
   InsertCodeBlock,
@@ -50,6 +46,7 @@ export default function InitializedMDXEditor({
         listsPlugin(),
         quotePlugin(),
         thematicBreakPlugin(),
+        // This plugin automatically converts markdown syntax as you type
         markdownShortcutPlugin(),
 
         // Link plugins
@@ -77,6 +74,11 @@ export default function InitializedMDXEditor({
             json: "JSON",
             python: "Python",
             bash: "Bash",
+            go: "Go",
+            rust: "Rust",
+            sql: "SQL",
+            yaml: "YAML",
+            markdown: "Markdown",
           },
         }),
 
@@ -86,10 +88,6 @@ export default function InitializedMDXEditor({
             <>
               <UndoRedo />
               <BoldItalicUnderlineToggles />
-              <BlockTypeSelect />
-              <CreateLink />
-              <InsertImage />
-              <InsertTable />
               <InsertCodeBlock />
             </>
           ),
@@ -97,6 +95,7 @@ export default function InitializedMDXEditor({
       ]}
       {...props}
       ref={editorRef}
+      autoFocus={false}
     />
   );
 }

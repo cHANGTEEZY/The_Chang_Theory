@@ -59,11 +59,9 @@ const SignUpPage = () => {
         toast.error("Failed to create account", {
           description: response.message as string,
         });
-        console.log("Response message is", response.message);
       }
     } catch (error) {
       toast.error("An error occurred");
-      console.log("error", error);
     } finally {
       setIsLoading(false);
     }
